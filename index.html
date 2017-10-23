@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <!-- <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script> -->
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      .mainwrap {display: none}
+      .mainwrap form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      .mainwrap form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      .mainwrap form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #connections { min-height: 30px; background-color: #ff5252; color: whitesmoke; display: block; }
+    </style>
+  </head>
+  <body>
+    <div class="nameform">
+      <form action="" id="nform">
+        <input type="text" autocomplete="off" id="n"/>
+        <button>Send</button>
+      </form>
+    </div>
+    <div class="mainwrap">
+      <div id="connections"></div>
+      <div id="activeUsers"></div>
+      <ul id="messages">
+        <div class="pmessages"></div>
+      </ul>
+      <form action="" id="mform">
+        <input id="m" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    
+    <script>
+    $(function () {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET','/prev-messages',true);
+        xhr.onload = function(){
+          if(this.status == 200){
+            var messages = JSON.parse(this.responseText);
+            messages.forEach(function(element) {
+              $messagediv.append($('<li>').text(element.by+' : '+element.message));
+            }, this);
+          }
+        }
+        xhr.onerror = function(){
+          console.log("Request Error");
+        }
+        //sends request
+        xhr.send();
+        // END of XHR Request
+        var socket = io();
+        var $messageinput = $('#m');
+        var $messagediv = $('#messages');
+        var $connectionsdiv = $('#connections')
+        // console.log(socket);
+        $('#nform').submit(function(e){
+          e.preventDefault();
+          socket.emit('new user', $('#n').val());
+          $('#n').val('');
+          $('.nameform').hide();
+          $('.mainwrap').show();
+          return false;
+        });
+        socket.on('active users',function(users){
+          console.log(users);
+          var html = '';
+          users.forEach(function(element) {
+            html  += element+'<br />'
+          }, this);
+          $('#activeUsers').html(html);
+        })
+        socket.on('user count',function(count){
+          $connectionsdiv.html('<h1 style="text-align:center">Active Connections : '+count+'</h1>');
+        })
+        $('#mform').submit(function(){
+        socket.emit('chat message', $messageinput.val());
+        $messageinput.val('');
+        return false;
+        });
+        socket.on('chat message', function(data){
+          $messagediv.append($('<li>').text(data.name+' : '+data.msg));
+        });
+    });
+    </script>
+  </body>
+</html>
