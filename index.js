@@ -15,7 +15,7 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 app.get('/prev-messages', function(req, res){
-    Message.find({}).select('by message -_id').sort({date:1}).exec(function(err,messages){
+    Message.find({}).select('by message -_id').sort({date:-1}).exec(function(err,messages){
       if(err){
         console.log(err);
       }
