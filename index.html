@@ -6,6 +6,7 @@
     src="https://code.jquery.com/jquery-3.2.1.min.js"
     integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
     crossorigin="anonymous"></script> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
@@ -22,7 +23,7 @@
   <body>
     <div class="nameform">
       <form action="" id="nform">
-        <input type="text" autocomplete="off" id="n"/>
+        <input type="text" autocomplete="off" id="n" autofocus/>
         <button>Send</button>
       </form>
     </div>
@@ -37,7 +38,7 @@
       </form>
     </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/js/jquery-3.2.1.js"></script>
     
     <script>
     $(function () {
@@ -71,7 +72,7 @@
           return false;
         });
         socket.on('active users',function(users){
-          console.log(users);
+          // console.log(users);
           var html = '';
           users.forEach(function(element) {
             html  += element+'<br />'

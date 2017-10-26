@@ -1,13 +1,15 @@
+var express = require('express');
 var app = require('express')();
 var mongoose = require('mongoose');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var Message = require('./models/message.js')
+var Message = require('./models/message.js');
+var path = require("path");
 var db = mongoose.connection;
 var users = [];
 mongoose.connect('mongodb://127.0.0.1/chat', { useMongoClient: true });
 mongoose.Promise = global.Promise;
-
+app.use(express.static(path.join(__dirname,'public')));
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
