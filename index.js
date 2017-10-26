@@ -7,7 +7,7 @@ var Message = require('./models/message.js');
 var path = require("path");
 var db = mongoose.connection;
 var users = [];
-mongoose.connect('mongodb://127.0.0.1/chat', { useMongoClient: true });
+mongoose.connect('mongodb://chandu:chan@chat-shard-00-00-wku0q.mongodb.net:27017,chat-shard-00-01-wku0q.mongodb.net:27017,chat-shard-00-02-wku0q.mongodb.net:27017/test?ssl=true&replicaSet=chat-shard-0&authSource=admin', { useMongoClient: true });
 mongoose.Promise = global.Promise;
 app.use(express.static(path.join(__dirname,'public')));
 app.get('/', function(req, res){
